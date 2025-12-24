@@ -1,8 +1,17 @@
 const fetch = require('node-fetch');
 
+function getYearRange(year) {
+  return {
+    from: Math.floor(Date.UTC(year, 0, 1) / 1000),
+    to:   Math.floor(Date.UTC(year + 1, 0, 1) / 1000)
+  };
+}
+
 let cachedData = null;
 let lastFetched = 0;
 const CACHE_DURATION_MS = 15 * 1000; // 15 seconds
+const year = new Date().getUTCFullYear();
+const { from, to } = getYearRange(year);
 
 exports.handler = async function(event, context) {
     const apiKey = process.env.LASTFM_API_KEY;
@@ -23,7 +32,7 @@ exports.handler = async function(event, context) {
 
     try {
         const response = await fetch(
-            `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`
+            `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&from=${from}&to=${to}&api_key=${apiKey}&format=json&limit=1`
         );
         const data = await response.json();
 
