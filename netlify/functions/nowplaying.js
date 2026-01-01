@@ -1,17 +1,30 @@
 const fetch = require('node-fetch');
 
 function getYearRange(year) {
+  const fromDate = new Date(`${year}-01-01T00:00:00`);
+  const toDate = new Date(`${year + 1}-01-01T00:00:00`);
+  const getPacificEpoch = (date) => {
+    const zonedString = date.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+    return Math.floor(new Date(zonedString).getTime() / 1000);
+  };
+
   return {
-    from: Math.floor(Date.UTC(year, 0, 1) / 1000),
-    to:   Math.floor(Date.UTC(year + 1, 0, 1) / 1000)
+    from: getPacificEpoch(fromDate),
+    to:   getPacificEpoch(toDate)
   };
 }
+
+// california on top!
+const pacificYear = new Date().toLocaleDateString('en-US', {
+    timeZone: 'America/Los_Angeles',
+    year: 'numeric'
+});
 
 let cachedData = null;
 let lastFetched = 0;
 const CACHE_DURATION_MS = 15 * 1000; // 15 seconds
-const year = new Date().getUTCFullYear();
-const { from, to } = getYearRange(year);
+const { from, to } = getYearRange(parseInt(pacificYear));
+
 
 exports.handler = async function(event, context) {
     const apiKey = process.env.LASTFM_API_KEY;
