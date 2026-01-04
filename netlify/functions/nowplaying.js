@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 
-function getYearRange(year) {
+// doesnt work for some reason
+/* function getYearRange(year) {  
   const fromDate = new Date(`${year}-01-01T00:00:00`);
   const toDate = new Date(`${year + 1}-01-01T00:00:00`);
   const getPacificEpoch = (date) => {
@@ -12,18 +13,19 @@ function getYearRange(year) {
     from: getPacificEpoch(fromDate),
     to:   getPacificEpoch(toDate)
   };
-}
+} 
 
-// california on top!
 const pacificYear = new Date().toLocaleDateString('en-US', {
     timeZone: 'America/Los_Angeles',
     year: 'numeric'
-});
+}); */
 
 let cachedData = null;
 let lastFetched = 0;
 const CACHE_DURATION_MS = 15 * 1000; // 15 seconds
-const { from, to } = getYearRange(parseInt(pacificYear));
+// const { from, to } = getYearRange(parseInt(pacificYear));
+const from = 1767254400;
+const to = 1798790400;
 
 
 exports.handler = async function(event, context) {
